@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-FitPeak-c16a1041-bab4-4aa9-95cf-5ae9ddbbeac9</UserSecretsId>
   </PropertyGroup>

@@ -1,0 +1,95 @@
+﻿@page
+@model FitPeak.Pages.ListChallengesModel;
+
+<style>
+    .table-wrapper {
+        height: 40rem;
+        overflow: auto;
+        margin-top: 2rem;
+    }
+
+    .table-wrapper .table {
+        --bs-table-bg:
+        ;
+    }
+
+    .table-header {
+        position: sticky;
+        top: 0;
+        background-color: white;
+    }
+
+    .table-header th,
+    .table tbody td {
+        padding: 1rem;
+    }
+
+    .hard {
+        background-color: #f7dddc;
+    }
+
+    .medium {
+        background-color: #fcefdc !important;
+    }
+
+    .easy {
+        background-color: #dbf2e3;
+    }
+</style>
+
+<h2 style="text-align: center; margin-top: 4rem">Challenges</h2>
+
+<div class="table-wrapper">
+    <table class="table">
+        <thead class="table-header">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>End Date</th>
+                <th>Join</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var challenge in Model.Challenges)
+            {
+                string colorClass = "";
+                switch (challenge.Difficulty)
+                {
+                    case "Hard":
+                        colorClass = "hard";
+                        break;
+                    case "Medium":
+                        colorClass = "medium";
+                        break;
+                    case "Easy":
+                        colorClass = "easy";
+                        break;
+                    default:
+                        break;
+                }
+
+                <tr class="@colorClass">
+                    <td>@challenge.Title</td>
+                    <td>@challenge.Description</td>
+                    <td>@challenge.Category</td>
+                    <td>@challenge.Difficulty</td>
+                    <td>@challenge.EndDate.ToShortDateString()</td>
+                    <td>
+                        @if (await Model.UserHasJoinedChallenge(challenge.Id))
+                        {
+                            <button type="button" class="btn btn-primary" disabled>Joined</button>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="Join" asp-route-id="@challenge.Id">
+                                <button type="submit" class="btn btn-success">Join</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
