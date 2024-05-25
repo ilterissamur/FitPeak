@@ -4,14 +4,17 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using FitPeak.Models;
 using FitPeak.Data;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FitPeak.Areas.Identity.Pages.Account.Manage
 {
@@ -33,16 +36,9 @@ namespace FitPeak.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public BufferedSingleFileUploadDb FileUpload { get; set; } = new BufferedSingleFileUploadDb();
-        public class BufferedSingleFileUploadDb
-        {
-            [Display(Name = "Profile Picture")]
-            public IFormFile FormFile { get; set; }
-        }
 
-        public byte[] ProfilePicture { get; set; }
-
+        public byte[] Picture { get; set; }
         public string Biography { get; set; }
-
         public string Username { get; set; }
 
         [TempData]
@@ -56,21 +52,60 @@ namespace FitPeak.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Biography")]
+            public string Biography { get; set; }
+        }
+
+        public class BufferedSingleFileUploadDb
+        {
+            [Display(Name = "Profile Picture")]
+            public IFormFile FormFile { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
         {
+            _context.Entry(user).State = EntityState.Detached;
+
+            user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == user.Id);
+
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var biography = user.Biography;
 
             Username = userName;
+            Biography = biography;
+
+            if (user != null)
+            {
+                if (user.ProfilePicture != null)
+                {
+                    Picture = user.ProfilePicture ?? Array.Empty<byte>();
+                }
+                else
+                {
+                    string picturePath = "./wwwroot/images/default_profile_picture.jpeg";
+                    using var stream = System.IO.File.OpenRead(picturePath);
+                    var memoryStream = new MemoryStream();
+                    await stream.CopyToAsync(memoryStream);
+                    Picture = memoryStream.ToArray();
+
+                    user.ProfilePicture = Picture;
+
+                    _context.Attach(user);
+                    _context.Entry(user).Property(u => u.ProfilePicture).IsModified = true;
+
+                    await _context.SaveChangesAsync();
+                }
+            }
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Biography = biography
             };
-
         }
+
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -98,15 +133,22 @@ namespace FitPeak.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            var profileDetail = await _context.ApplicationUsers.FirstOrDefaultAsync(p => p.Id == user.Id);
+            if (profileDetail != null)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                if (FileUpload.FormFile != null)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await FileUpload.FormFile.CopyToAsync(memoryStream);
+                        profileDetail.ProfilePicture = memoryStream.ToArray();
+                    }
                 }
+
+                profileDetail.Biography = Input.Biography;
+
+                _context.ApplicationUsers.Update(profileDetail);
+                await _context.SaveChangesAsync();
             }
 
             await _signInManager.RefreshSignInAsync(user);
