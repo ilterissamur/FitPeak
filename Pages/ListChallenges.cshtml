@@ -39,7 +39,32 @@
 
 <h2 style="text-align: center; margin-top: 4rem">Challenges</h2>
 
+<form id="sortForm" method="get" style="display: inline-block; position:absolute; left: 10rem; top:12rem;">
+    <label for="sort">Sort by:</label>
+    <select id="sort" name="sort" onchange="document.getElementById('sortForm').submit()">
+        <option value="default">Default</option>
+        <option value="easy">Easy To Hard</option>
+        <option value="hard">Hard To Easy</option>
+    </select>
+</form>
+
+<form id="filterForm" method="post" style="display: inline-block; position:absolute; left: 30rem; top:12rem;">
+    <label for="option">Filter by:</label>
+    <select name="option" id="option" onchange="document.getElementById('filterForm').submit()"
+        asp-page-handler="Download">
+        <option value="default">Default</option>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+        <option value="step">Step</option>
+        <option value="cardio">Cardio</option>
+        <option value="squad">Squad</option>
+        <option value="wloss">Weight Loss</option>
+    </select>
+</form>
+
 <div class="table-wrapper">
+
     <table class="table">
         <thead class="table-header">
             <tr>

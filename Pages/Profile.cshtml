@@ -1,0 +1,33 @@
+﻿@page
+@model MyApp.Namespace.ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="col-md-6 text-center"
+    style="background-color: #f7f7f9; height: 87.5vh; width: 34rem; position: absolute; top: 6rem;">
+    <div class="profile-container" style="margin-top: 3rem;">
+        @if (Model.Picture != null && Model.Picture.Length > 0)
+        {
+            <div><img src="data:image/jpeg;base64,@System.Convert.ToBase64String(Model.Picture)"
+                    class="img-fluid rounded-circle profile-image" alt="Profile Picture"
+                    style="height: 200px; width: 200px;" /></div>
+        }
+        else
+        {
+            <p class="text-danger">No profile picture available.</p>
+        }
+        <br />
+        <h1 class="text-center" style="font-size: 200%;">@Model.Username</h1>
+        <br />
+        <div
+            style="margin: 20px auto; border: 1px solid #ccc; padding: 10px; background-color: #F5F5F5; border-radius: 5px; width: 30rem;">
+            <h2 class="text-info" style="font-size: 130%; text-align: center;">Biography</h2>
+            <p style="text-align: center; color:black">@Model.Biography</p>
+        </div>
+        <div style="margin-top: 10rem;">
+            <a asp-area="Identity" asp-page="./Account/Manage/Index" class="btn btn-outline-primary">Manage Account &
+                Profile</a>
+        </div>
+    </div>
+</div>
