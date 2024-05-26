@@ -6,5 +6,6 @@ namespace FitPeak.Models
         public int ChallengeId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public Challenge Challenge { get; set; }
+        public bool IsFavorite { get; set; }
     }
 }

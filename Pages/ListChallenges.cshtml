@@ -17,6 +17,7 @@
         position: sticky;
         top: 0;
         background-color: white;
+        z-index: 1000;
     }
 
     .table-header th,
@@ -29,7 +30,7 @@
     }
 
     .medium {
-        background-color: #fcefdc !important;
+        background-color: #fcefdc;
     }
 
     .easy {
@@ -64,7 +65,6 @@
 </form>
 
 <div class="table-wrapper">
-
     <table class="table">
         <thead class="table-header">
             <tr>
@@ -73,7 +73,8 @@
                 <th>Category</th>
                 <th>Difficulty</th>
                 <th>End Date</th>
-                <th>Join</th>
+                <th style="z-index: 1;">Join</th>
+                <th style="z-index: 1;">Favorite</th>
             </tr>
         </thead>
         <tbody>
@@ -102,16 +103,38 @@
                     <td>@challenge.Difficulty</td>
                     <td>@challenge.EndDate.ToShortDateString()</td>
                     <td>
-                        @if (await Model.UserHasJoinedChallenge(challenge.Id))
-                        {
-                            <button type="button" class="btn btn-primary" disabled>Joined</button>
-                        }
-                        else
-                        {
-                            <form method="post" asp-page-handler="Join" asp-route-id="@challenge.Id">
-                                <button type="submit" class="btn btn-success">Join</button>
-                            </form>
-                        }
+                        <div class="button-container">
+                            @if (await Model.UserHasJoinedChallenge(challenge.Id))
+                            {
+                                <button type="button" class="btn btn-dark disabled" disabled>Joined</button>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Join" asp-route-id="@challenge.Id">
+                                    <button type="submit" class="btn btn-success">Join</button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <div class="button-container">
+                            @if (await Model.UserHasJoinedChallenge(challenge.Id) == false)
+                            {
+                                <button type="button" class="btn btn-dark disabled" disabled>Inactive</button>
+                            }
+                            else if (await Model.UserHasJoinedChallenge(challenge.Id) == true && await
+                            Model.UserHasFavoritedChallenge(challenge.Id) == false)
+                            {
+                                <form method="post" asp-page-handler="Fav" asp-route-id="@challenge.Id"
+                                    asp-route-challengeId="@challenge.Id">
+                                    <button type="submit" class="btn btn-primary">Favorite</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-dark disabled" disabled>Favved</button>
+                            }
+                        </div>
                     </td>
                 </tr>
             }

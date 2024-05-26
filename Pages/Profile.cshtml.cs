@@ -22,13 +22,34 @@ namespace MyApp.Namespace
             _context = context;
         }
 
+
+
         public byte[] Picture { get; set; }
         public string Biography { get; set; }
         public string Username { get; set; }
+        public List<Challenge> Challenges = new List<Challenge>();
+
 
         private async Task LoadAsync(ApplicationUser user)
         {
             user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == user.Id);
+
+            var favoriteChallengeIds = await _context.ApplicationUserChallenges
+            .Where(c => c.ApplicationUserId == user.Id && c.IsFavorite)
+            .Select(c => c.ChallengeId)
+            .ToListAsync();
+
+            foreach (var challengeId in favoriteChallengeIds)
+            {
+                var temp = await _context.Challenges.FirstOrDefaultAsync(c => c.Id == challengeId);
+
+                if (temp != null)
+                {
+                    Challenges.Add(temp);
+                }
+
+                Console.WriteLine($"{temp.Id}");
+            }
 
             var userName = await _userManager.GetUserNameAsync(user);
             var biography = user.Biography;

@@ -23,32 +23,32 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ApplicationUserChallenge>().HasOne(auc => auc.ApplicationUser).WithMany(au => au.Challenges).HasForeignKey(auc => auc.ApplicationUserId);
         modelBuilder.Entity<ApplicationUserChallenge>().HasOne(auc => auc.Challenge).WithMany(c => c.Users).HasForeignKey(auc => auc.ChallengeId);
 
-        modelBuilder.Entity<Challenge>(entity =>
-        {
-            entity.ToTable("Challenges");
+        // modelBuilder.Entity<Challenge>(entity =>
+        // {
+        //     entity.ToTable("Challenges");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+        //     entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.Title)
-                .HasColumnName("Title")
-                .HasColumnType("nvarchar(MAX)");
+        //     entity.Property(e => e.Title)
+        //         .HasColumnName("Title")
+        //         .HasColumnType("nvarchar(MAX)");
 
-            entity.Property(e => e.Description)
-                .HasColumnName("Description")
-                .HasColumnType("nvarchar(MAX)");
+        //     entity.Property(e => e.Description)
+        //         .HasColumnName("Description")
+        //         .HasColumnType("nvarchar(MAX)");
 
-            entity.Property(e => e.Category)
-                .HasColumnName("Category")
-                .HasColumnType("nvarchar(MAX)");
+        //     entity.Property(e => e.Category)
+        //         .HasColumnName("Category")
+        //         .HasColumnType("nvarchar(MAX)");
 
-            entity.Property(e => e.Difficulty)
-                .HasColumnName("Difficulty")
-                .HasColumnType("nvarchar(MAX)");
+        //     entity.Property(e => e.Difficulty)
+        //         .HasColumnName("Difficulty")
+        //         .HasColumnType("nvarchar(MAX)");
 
-            entity.Property(e => e.EndDate)
-                .HasColumnName("EndDate")
-                .HasColumnType("datetime2");
-        });
+        //     entity.Property(e => e.EndDate)
+        //         .HasColumnName("EndDate")
+        //         .HasColumnType("datetime2");
+        // });
 
     }
 }

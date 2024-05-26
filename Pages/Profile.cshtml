@@ -4,6 +4,43 @@
     ViewData["Title"] = "Profile";
 }
 
+<style>
+    .table-wrapper {
+        width: 1rem;
+        height: 40rem;
+        overflow: auto;
+        margin-top: 2rem;
+    }
+
+    .table-wrapper .table {
+        --bs-table-bg:
+        ;
+    }
+
+    .table-header {
+        position: sticky;
+        top: 0;
+        background-color: white;
+    }
+
+    .table-header th,
+    .table tbody td {
+        padding: 1rem;
+    }
+
+    .hard {
+        background-color: #f7dddc;
+    }
+
+    .medium {
+        background-color: #fcefdc !important;
+    }
+
+    .easy {
+        background-color: #dbf2e3;
+    }
+</style>
+
 <div class="col-md-6 text-center"
     style="background-color: #f7f7f9; height: 87.5vh; width: 34rem; position: absolute; top: 6rem;">
     <div class="profile-container" style="margin-top: 3rem;">
@@ -29,5 +66,48 @@
             <a asp-area="Identity" asp-page="./Account/Manage/Index" class="btn btn-outline-primary">Manage Account &
                 Profile</a>
         </div>
+    </div>
+</div>
+
+<div class="col-md-6 text-center" style="margin-left: 46rem;">
+    <div class="table-wrapper" style="width: 60rem;">
+        <table class="table">
+            <thead class="table-header">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Difficulty</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var challenge in Model.Challenges)
+                {
+                    string colorClass = "";
+                    switch (challenge.Difficulty)
+                    {
+                        case "Hard":
+                            colorClass = "hard";
+                            break;
+                        case "Medium":
+                            colorClass = "medium";
+                            break;
+                        case "Easy":
+                            colorClass = "easy";
+                            break;
+                        default:
+                            break;
+                    }
+                    <tr class="@colorClass">
+                        <td>@challenge.Title</td>
+                        <td>@challenge.Description</td>
+                        <td>@challenge.Category</td>
+                        <td>@challenge.Difficulty</td>
+                        <td>@challenge.EndDate.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

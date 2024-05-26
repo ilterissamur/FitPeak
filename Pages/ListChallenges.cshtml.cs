@@ -92,10 +92,44 @@ namespace FitPeak.Pages
                 return RedirectToPage("/Account/Login", new { area = "Identity", returnUrl = "/ListChallenges" });
             }
 
-            _context.ApplicationUserChallenges.Add(new ApplicationUserChallenge { ApplicationUser = user, Challenge = challenge });
+            _context.ApplicationUserChallenges.Add(new ApplicationUserChallenge { ApplicationUser = user, Challenge = challenge, });
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/ListChallenges");
+        }
+
+        public async Task<IActionResult> OnPostFavAsync(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var favRow = await _context.ApplicationUserChallenges
+           .FirstOrDefaultAsync(row => row.ApplicationUserId == user.Id && row.ChallengeId == id);
+
+            favRow.IsFavorite = true;
+
+            await _context.SaveChangesAsync();
+            return RedirectToPage("/ListChallenges");
+        }
+
+        public async Task<bool> UserHasFavoritedChallenge(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var favRow = await _context.ApplicationUserChallenges
+           .FirstOrDefaultAsync(row => row.ApplicationUserId == user.Id && row.ChallengeId == id);
+
+            if (favRow == null)
+            {
+                return false;
+            }
+            else if (favRow.IsFavorite)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task<bool> UserHasJoinedChallenge(int challengeId)
