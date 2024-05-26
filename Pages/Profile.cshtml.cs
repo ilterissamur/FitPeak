@@ -54,7 +54,19 @@ namespace MyApp.Namespace
             var userName = await _userManager.GetUserNameAsync(user);
             var biography = user.Biography;
             var picture = user.ProfilePicture;
-            Picture = user.ProfilePicture ?? Array.Empty<byte>();
+            if (user.ProfilePicture != null)
+            {
+                Picture = user.ProfilePicture ?? Array.Empty<byte>();
+            }
+            else
+            {
+                string picturePath = "./wwwroot/images/default_profile_picture.jpeg";
+                using var stream = System.IO.File.OpenRead(picturePath);
+                var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                Picture = memoryStream.ToArray();
+            }
+
             Username = userName;
             Biography = biography;
         }
