@@ -106,7 +106,7 @@
                         <div class="button-container">
                             @if (await Model.UserHasJoinedChallenge(challenge.Id))
                             {
-                                <button type="button" class="btn btn-dark disabled" disabled>Joined</button>
+                                <button type="button" class="btn btn-success disabled" disabled>Joined</button>
                             }
                             else
                             {
@@ -127,12 +127,12 @@
                             {
                                 <form method="post" asp-page-handler="Fav" asp-route-id="@challenge.Id"
                                     asp-route-challengeId="@challenge.Id">
-                                    <button type="submit" class="btn btn-primary">Favorite</button>
+                                    <button type="submit" class="btn btn-warning">Favorite</button>
                                 </form>
                             }
                             else
                             {
-                                <button type="button" class="btn btn-dark disabled" disabled>Favved</button>
+                                <button type="button" class="btn btn-warning disabled" disabled>Favved</button>
                             }
                         </div>
                     </td>

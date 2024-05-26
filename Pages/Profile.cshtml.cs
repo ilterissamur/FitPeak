@@ -5,9 +5,11 @@ using FitPeak.Models;
 using FitPeak.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyApp.Namespace
 {
+    [Authorize]
     public class ProfileModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -47,8 +49,6 @@ namespace MyApp.Namespace
                 {
                     Challenges.Add(temp);
                 }
-
-                Console.WriteLine($"{temp.Id}");
             }
 
             var userName = await _userManager.GetUserNameAsync(user);
